@@ -6,9 +6,9 @@ using namespace std;
 
 SceneID scene,title;
 ObjectID bord, dot_bord[361],stone_black[181], stone_white[180],turn_white, turn_black, start;
-TimerID timer_bl, timer_wh;
+TimerID timer_bl, timer_wh, timer_end, timer_end2;
 
-int dot_bord_x[361], dot_bord_y[361];
+int stone_bord_x[361], stone_bord_y[361], dot, state_bord[361];
 int num_bl = 0, num_wh = 1, turn = 0; // 0 =black, 1= white
 
 
@@ -33,6 +33,7 @@ int cordinate_click(ObjectID object) {
 	}
 	return - 1;
 }
+
 void turn_check() {
 	if (turn == 0) {
 		showObject(turn_black);
@@ -46,13 +47,63 @@ void turn_check() {
 
 void create_stone(bool color, int select) {
 	if (color == true) { //black
-		stone_black[num_bl] = createObject("Images/stone_black.png", scene, dot_bord_x[select] + 4 - 10, dot_bord_y[select] + 4 - 10, true);
+		stone_black[num_bl] = createObject("Images/stone_black.png", scene, stone_bord_x[select] + 4 - 10, stone_bord_y[select] + 4 - 10, true);
+		state_bord[select] = 1; 
 	}
 	else {
-		stone_white[num_wh] = createObject("Images/stone_white.png", scene, dot_bord_x[select] + 4 - 10, dot_bord_y[select] + 4 - 10, true);
+		stone_white[num_wh] = createObject("Images/stone_white.png", scene, stone_bord_x[select] + 4 - 10, stone_bord_y[select] + 4 - 10, true);
+		state_bord[select] = -1;
 	}
 }
 
+void end_game() {
+	hideTimer();
+	startTimer(timer_end2);
+	showTimer(timer_end);
+}
+
+void success_check() {
+	for (int i = 0; i < 362; i++) {
+		if (turn == 0) {
+			if (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5 && (i % 19 <= 14)) {
+				showMessage("Black Win!!");
+				end_game();
+			}
+			else if (state_bord[i] + state_bord[i + 19] + state_bord[i + 38] + state_bord[i + 57] + state_bord[i + 76] == 5) {
+				showMessage("Black Win!!");
+				end_game();
+			}
+
+			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5) {
+				showMessage("Black Win!!");
+				end_game();
+			}
+			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5) {
+				showMessage("Black Win!!");
+				end_game();
+			}
+		}
+		else {
+			if (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == -5 && (i % 19 <= 14)) {
+				showMessage("White Win!!");
+				end_game();
+			}
+			else if (state_bord[i] + state_bord[i + 19] + state_bord[i + 38] + state_bord[i + 57] + state_bord[i + 76] == -5) {
+				showMessage("White Win!!");
+				end_game();
+			}
+			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5) {
+				showMessage("White Win!!");
+				end_game();
+			}
+			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5) {
+				showMessage("White Win!!");
+				end_game();
+			}
+		}
+		
+	}
+}
 
 void timerEvent(bool color) {
 	if (color == true) { // black
@@ -70,6 +121,7 @@ void timerEvent(bool color) {
 		showTimer(timer_bl);
 	}
 }
+
 void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 
 	int select = cordinate_click(object);
@@ -86,6 +138,7 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 			turn_check();
 			create_stone(true, select);
 			timerEvent(true);
+			success_check();
 			num_bl += 1;
 			turn = 1;
 		}
@@ -93,6 +146,7 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 			turn_check();
 			create_stone(false, select);
 			timerEvent(false);
+			success_check();
 			num_wh += 1;
 			turn = 0;
 		}
@@ -100,13 +154,23 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 
 	
 }
+
 void Timer_callback(TimerID timer) {
 	if (timer == timer_bl) {
 		showMessage("White Win!!");
-
+		end_game();
 	}
 	else if (timer == timer_wh) {
 		showMessage("Black Win!!");
+		end_game();
+	}
+	else if(timer == timer_end) {
+		endGame();
+	}
+	else if(timer == timer_end2){
+		showMessage("5초후 게임이 종료됩니다!");
+		startTimer(timer_end);
+		
 	}
 }
 
@@ -127,12 +191,15 @@ int main()
 
 	timer_bl = createTimer(20.0f);
 	timer_wh = createTimer(20.0f);
+	timer_end = createTimer(5.0f);
+	timer_end2 = createTimer(3.0f);
 
 	for (int i = 0; i < 361; i++) {
-		dot_bord_x[i] = 340 - 4 +( 30 * (i % 19 + 1));
-		dot_bord_y[i] = 60 - 4 + (30 * (19 - i / 19));
-		dot_bord[i] = createObject("Images/dot_bord.png", scene, dot_bord_x[i], dot_bord_y[i], true);
+		stone_bord_x[i] = 340 - 4 +( 30 * (i % 19 + 1));
+		stone_bord_y[i] = 60 - 4 + (30 * (19 - i / 19));
+		dot_bord[i] = createObject("Images/dot_bord.png", scene, stone_bord_x[i], stone_bord_y[i], true);
+		state_bord[i] = 0;
 	}
 	startGame(title);
-
+	 
 }
