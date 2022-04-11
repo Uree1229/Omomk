@@ -4,8 +4,8 @@
 
 using namespace std;
 
-SceneID scene,title;
-ObjectID bord, dot_bord[361],stone_black[181], stone_white[180],turn_white, turn_black, start;
+SceneID scene, title;
+ObjectID bord, dot_bord[361], stone_black[181], stone_white[180], turn_white, turn_black, start;
 TimerID timer_bl, timer_wh, timer_end, timer_end2;
 
 int stone_bord_x[361], stone_bord_y[361], dot, state_bord[361];
@@ -18,20 +18,56 @@ ObjectID createObject(const char* image, SceneID scene, int x, int y, bool shown
 
 	ObjectID object = createObject(image);
 	locateObject(object, scene, x, y);
-	
+
 	if (shown) {
 		showObject(object);
 	}
 	return object;
+}
+void timer_create() {
+
+	timer_bl = createTimer(20.0f);
+	timer_wh = createTimer(20.0f);
+	timer_end = createTimer(5.0f);
+	timer_end2 = createTimer(3.0f);
+}
+
+void object_create() {
+
+	start = createObject("Images/start.png", title, 590, 60, true);
+	bord = createObject("Images/bord.png", scene, 340, 60, true);
+	turn_black = createObject("Images/turn_black.png", scene, 106, 60, true);
+	turn_white = createObject("Images/turn_white.png", scene, 1056, 60, false);
+}
+
+void bord_create() {
+	for (int i = 0; i < 361; i++) {
+		stone_bord_x[i] = 340 - 4 + (30 * (i % 19 + 1));
+		stone_bord_y[i] = 60 - 4 + (30 * (19 - i / 19));
+		dot_bord[i] = createObject("Images/dot_bord.png", scene, stone_bord_x[i], stone_bord_y[i], true);
+		state_bord[i] = 0;
+	}
+}
+
+void game_setting() {
+
+	title = createScene("title", "Images/title.png");
+	scene = createScene("background", "Images/background.png");
+
+	object_create();
+	timer_create();
+	bord_create();
+
+	
 }
 
 int cordinate_click(ObjectID object) {
 	for (int i = 0; i < 361; i++) {
 		if (dot_bord[i] == object) {
 			return i;
-			}
+		}
 	}
-	return - 1;
+	return -1;
 }
 
 void turn_check() {
@@ -39,7 +75,7 @@ void turn_check() {
 		showObject(turn_black);
 		hideObject(turn_white);
 	}
-	else if(turn == 1){
+	else if (turn == 1) {
 		showObject(turn_white);
 		hideObject(turn_black);
 	}
@@ -48,7 +84,7 @@ void turn_check() {
 void create_stone(bool color, int select) {
 	if (color == true) { //black
 		stone_black[num_bl] = createObject("Images/stone_black.png", scene, stone_bord_x[select] + 4 - 10, stone_bord_y[select] + 4 - 10, true);
-		state_bord[select] = 1; 
+		state_bord[select] = 1;
 	}
 	else {
 		stone_white[num_wh] = createObject("Images/stone_white.png", scene, stone_bord_x[select] + 4 - 10, stone_bord_y[select] + 4 - 10, true);
@@ -101,24 +137,29 @@ void success_check() {
 				end_game();
 			}
 		}
-		
+
 	}
 }
-
+void timer_setting(TimerID timer, int type) {
+	hideTimer();
+	if (type == 0) {
+		stopTimer(timer);
+		setTimer(timer, 20.0f);
+	}
+	else if (type == 1) {
+		showTimer(timer);
+		startTimer(timer);
+	}
+	
+}
 void timerEvent(bool color) {
 	if (color == true) { // black
-		stopTimer(timer_bl);
-		setTimer(timer_bl, 20.0f);
-		hideTimer();
-		showTimer(timer_wh);
-		startTimer(timer_wh);
+		timer_setting(timer_bl, 0);
+		timer_setting(timer_wh, 1);
 	}
 	else {
-		stopTimer(timer_wh);
-		setTimer(timer_wh, 20.0f);
-		hideTimer();
-		startTimer(timer_bl);
-		showTimer(timer_bl);
+		timer_setting(timer_wh, 0);
+		timer_setting(timer_bl, 1);
 	}
 }
 
@@ -152,7 +193,7 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 		}
 	}
 
-	
+
 }
 
 void Timer_callback(TimerID timer) {
@@ -164,13 +205,13 @@ void Timer_callback(TimerID timer) {
 		showMessage("Black Win!!");
 		end_game();
 	}
-	else if(timer == timer_end) {
+	else if (timer == timer_end) {
 		endGame();
 	}
-	else if(timer == timer_end2){
+	else if (timer == timer_end2) {
 		showMessage("5초후 게임이 종료됩니다!");
 		startTimer(timer_end);
-		
+
 	}
 }
 
@@ -180,26 +221,12 @@ int main()
 	setMouseCallback(Mouse_Callback);
 	setTimerCallback(Timer_callback);
 
-	title = createScene("title", "Images/title.png");
-	scene = createScene("background", "Images/background.png");
+	game_setting();
 
-	start = createObject("Images/start.png", title, 590, 60, true);
-	bord = createObject("Images/bord.png", scene, 340, 60, true);
-	
-	turn_black = createObject("Images/turn_black.png",scene, 106, 60, true);
-	turn_white = createObject("Images/turn_white.png",scene, 1056, 60, false);
+	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, 0);
+	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, 0);
+	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, 0);
 
-	timer_bl = createTimer(20.0f);
-	timer_wh = createTimer(20.0f);
-	timer_end = createTimer(5.0f);
-	timer_end2 = createTimer(3.0f);
-
-	for (int i = 0; i < 361; i++) {
-		stone_bord_x[i] = 340 - 4 +( 30 * (i % 19 + 1));
-		stone_bord_y[i] = 60 - 4 + (30 * (19 - i / 19));
-		dot_bord[i] = createObject("Images/dot_bord.png", scene, stone_bord_x[i], stone_bord_y[i], true);
-		state_bord[i] = 0;
-	}
 	startGame(title);
-	 
+
 }
