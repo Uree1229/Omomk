@@ -118,11 +118,11 @@ void success_check() {
 				end_game();
 			}
 
-			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5) {
+			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5 && i>=4) {
 				showMessage("Black Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5) {
+			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5 && i<=15) {
 				showMessage("Black Win!!");
 				end_game();
 			}
@@ -136,11 +136,11 @@ void success_check() {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5) {
+			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5 && i>=4) {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5) {
+			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5 && i<=15) {
 				showMessage("White Win!!");
 				end_game();
 			}
