@@ -40,7 +40,7 @@ void object_create() {
 	turn_black = createObject("Images/turn_black.png", scene, 106, 60, true);
 	turn_white = createObject("Images/turn_white.png", scene, 1056, 60, false);
 
-	stone_ck = createObject("Images/stone_check.png", scene, check_x, check_y, false);
+	
 }
 
 void bord_create() {
@@ -50,6 +50,7 @@ void bord_create() {
 		dot_bord[i] = createObject("Images/dot_bord.png", scene, stone_bord_x[i], stone_bord_y[i], true);
 		state_bord[i] = 0;
 	}
+	stone_ck = createObject("Images/stone_check.png", scene, check_x, check_y, false);
 }
 
 void game_setting() {
@@ -107,40 +108,40 @@ void end_game() {
 }
 
 void success_check() {
-	for (int i = 0; i < 362; i++) {
+	for (int i = 0; i < 361; i++) {
 		if (turn == 0) {
-			if ((state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5) && (i % 19 >= 4)) {
+			if (i <=355 && (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5) && (i % 19 <= 14)) {
 				showMessage("Black Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 19] + state_bord[i + 38] + state_bord[i + 57] + state_bord[i + 76] == 5) {
+			else if (i <= 284 && state_bord[i] + state_bord[i + 19] + state_bord[i + 38] + state_bord[i + 57] + state_bord[i + 76] == 5) {
 				showMessage("Black Win!!");
 				end_game();
 			}
 
-			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5 && i>=4) {
+			else if (i <= 288 && state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5 && i>=4) {
 				showMessage("Black Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5 && i<=15) {
+			else if (i <= 280 && state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5 && i<=15) {
 				showMessage("Black Win!!");
 				end_game();
 			}
 		}
 		else {
-			if ((state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4]) == -5 && (i % 19 >= 4)) {
+			if (i <= 355 && (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4]) == -5 && (i % 19 <= 14)) {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 19] + state_bord[i + 38] + state_bord[i + 57] + state_bord[i + 76] == -5) {
+			else if (i <= 284 && state_bord[i] + state_bord[i + 19] + state_bord[i + 38] + state_bord[i + 57] + state_bord[i + 76] == -5) {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5 && i>=4) {
+			else if (i <= 288 && state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5) {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5 && i<=15) {
+			else if (i <= 280 && state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5) {
 				showMessage("White Win!!");
 				end_game();
 			}
