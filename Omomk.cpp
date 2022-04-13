@@ -1,15 +1,16 @@
-﻿#include <bangtal.h>
+#include <bangtal.h>
 #include <string>
 #include <string.h>
 
 using namespace std;
 
 SceneID scene, title;
-ObjectID bord, dot_bord[361], stone_black[181], stone_white[180], turn_white, turn_black, start;
+ObjectID bord,stone_ck, dot_bord[361], stone_black[181], stone_white[180], turn_white, turn_black, start;
+
 TimerID timer_bl, timer_wh, timer_end, timer_end2;
 
 int stone_bord_x[361], stone_bord_y[361], dot, state_bord[361];
-int num_bl = 0, num_wh = 1, turn = 0; // 0 =black, 1= white
+int check_x = 0,check_y=0 , num_bl = 0, num_wh = 1, turn = 0; // 0 =black, 1= white
 
 
 
@@ -38,6 +39,8 @@ void object_create() {
 	bord = createObject("Images/bord.png", scene, 340, 60, true);
 	turn_black = createObject("Images/turn_black.png", scene, 106, 60, true);
 	turn_white = createObject("Images/turn_white.png", scene, 1056, 60, false);
+
+	stone_ck = createObject("Images/stone_check.png", scene, check_x, check_y, false);
 }
 
 void bord_create() {
@@ -67,6 +70,7 @@ int cordinate_click(ObjectID object) {
 			return i;
 		}
 	}
+	if (object == stone_ck) return 362;
 	return -1;
 }
 
@@ -90,6 +94,10 @@ void create_stone(bool color, int select) {
 		stone_white[num_wh] = createObject("Images/stone_white.png", scene, stone_bord_x[select] + 4 - 10, stone_bord_y[select] + 4 - 10, true);
 		state_bord[select] = -1;
 	}
+}
+void stone_check() {
+	locateObject(stone_ck, scene, check_x, check_y);
+	showObject(stone_ck);
 }
 
 void end_game() {
@@ -166,6 +174,7 @@ void timerEvent(bool color) {
 void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 
 	int select = cordinate_click(object);
+	int select_num = 0;
 
 	if (select < 0) {
 		if (object == start) {
@@ -174,24 +183,39 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 			showTimer(timer_bl);
 		}
 	}
-	else {
-		if (turn == 0) {
-			turn_check();
-			create_stone(true, select);
-			timerEvent(true);
-			success_check();
-			num_bl += 1;
-			turn = 1;
-		}
-		else if (turn == 1) {
-			turn_check();
-			create_stone(false, select);
-			timerEvent(false);
-			success_check();
-			num_wh += 1;
-			turn = 0;
-		}
+	else if (select > 0 && select < 362) {
+
+		select_num = select;
+		check_x = stone_bord_x[select] + 4 - 10;
+		check_y = stone_bord_y[select] + 4 - 10;
+		stone_check();
+
+
 	}
+	else if (select == 362) {
+		
+			locateObject(stone_ck, scene, 0, 0);
+			hideObject(stone_ck);
+			if (turn == 0) {
+				turn_check();
+				create_stone(true, select_num);
+				timerEvent(true);
+				success_check();
+				num_bl += 1;
+				turn = 1;
+			}
+			else if (turn == 1) {
+				turn_check();
+				create_stone(false, select_num);
+				timerEvent(false);
+				success_check();
+				num_wh += 1;
+				turn = 0;
+			}
+
+		
+	}
+
 
 
 }
