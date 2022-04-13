@@ -5,12 +5,12 @@
 using namespace std;
 
 SceneID scene, title;
-ObjectID bord,stone_ck, dot_bord[361], stone_black[181], stone_white[180], turn_white, turn_black, start;
+ObjectID bord, stone_ck, dot_bord[361], stone_black[181], stone_white[180], turn_white, turn_black, start;
 
 TimerID timer_bl, timer_wh, timer_end, timer_end2;
-
+int select_num = 0;
 int stone_bord_x[361], stone_bord_y[361], dot, state_bord[361];
-int check_x = 0,check_y=0 , num_bl = 0, num_wh = 1, turn = 0; // 0 =black, 1= white
+int check_x = 0, check_y = 0, num_bl = 0, num_wh = 1, turn = 0; // 0 =black, 1= white
 
 
 
@@ -61,7 +61,7 @@ void game_setting() {
 	timer_create();
 	bord_create();
 
-	
+
 }
 
 int cordinate_click(ObjectID object) {
@@ -70,7 +70,7 @@ int cordinate_click(ObjectID object) {
 			return i;
 		}
 	}
-	if (object == stone_ck) return 362;
+	if (object == stone_ck) return 361;
 	return -1;
 }
 
@@ -109,7 +109,7 @@ void end_game() {
 void success_check() {
 	for (int i = 0; i < 362; i++) {
 		if (turn == 0) {
-			if (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5 && (i % 19 <= 14)) {
+			if ((state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5) && (i % 19 >= 4)) {
 				showMessage("Black Win!!");
 				end_game();
 			}
@@ -128,7 +128,7 @@ void success_check() {
 			}
 		}
 		else {
-			if (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == -5 && (i % 19 <= 14)) {
+			if ((state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4]) == -5 && (i % 19 >= 4)) {
 				showMessage("White Win!!");
 				end_game();
 			}
@@ -158,7 +158,7 @@ void timer_setting(TimerID timer, int type) {
 		showTimer(timer);
 		startTimer(timer);
 	}
-	
+
 }
 void timerEvent(bool color) {
 	if (color == true) { // black
@@ -173,8 +173,7 @@ void timerEvent(bool color) {
 
 void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 
-	int select = cordinate_click(object);
-	int select_num = 0;
+	int select = cordinate_click(object); // select<0 : 버튼 / select=0~360 : 격자점 / select= 361 : 확인용 돌
 
 	if (select < 0) {
 		if (object == start) {
@@ -183,19 +182,19 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 			showTimer(timer_bl);
 		}
 	}
-	else if (select > 0 && select < 362) {
+	else {
+		if (select >= 0 && select < 361) {
 
-		select_num = select;
-		check_x = stone_bord_x[select] + 4 - 10;
-		check_y = stone_bord_y[select] + 4 - 10;
-		stone_check();
+			select_num = select;
+			check_x = stone_bord_x[select] + 4 - 10;
+			check_y = stone_bord_y[select] + 4 - 10;
+			stone_check();
+		}
+		else if (select == 361) {
 
-
-	}
-	else if (select == 362) {
-		
 			locateObject(stone_ck, scene, 0, 0);
 			hideObject(stone_ck);
+
 			if (turn == 0) {
 				turn_check();
 				create_stone(true, select_num);
@@ -213,8 +212,10 @@ void Mouse_Callback(ObjectID object, int x, int y, MouseAction action) {
 				turn = 0;
 			}
 
-		
+
+		}
 	}
+
 
 
 
