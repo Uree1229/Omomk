@@ -102,7 +102,7 @@ void end_game() {
 void success_check() {
 	for (int i = 0; i < 361; i++) {
 		if (turn == 1) {
-			if (i <=355 && (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5) && (i % 19 <= 14)) {
+			if (i <=356 && (i % 19 <= 14) && state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4] == 5)  {
 				showMessage("Black Win!!");
 				end_game();
 			}
@@ -110,18 +110,17 @@ void success_check() {
 				showMessage("Black Win!!");
 				end_game();
 			}
-
-			else if (i <= 284 && (i % 19 >= 4)&& state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5 && i >= 4) {
+			else if (i <= 284 && (i % 19 >= 4)&& state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == 5) {
 				showMessage("Black Win!!");
 				end_game();
 			}
-			else if (i <= 280 && (i % 19 <= 14) && state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5 && i <= 15) {
+			else if (i <= 280 && (i % 19 <= 14) && state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == 5) {
 				showMessage("Black Win!!");
 				end_game();
 			}
 		}
 		else {
-			if (i <= 355 && (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4]) == -5 && (i % 19 <= 14)) {
+			if (i <= 356 && (i % 19 <= 14) && (state_bord[i] + state_bord[i + 1] + state_bord[i + 2] + state_bord[i + 3] + state_bord[i + 4]) == -5) {
 				showMessage("White Win!!");
 				end_game();
 			}
@@ -129,11 +128,11 @@ void success_check() {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (i <= 284 &&(i % 19 >=4)&& state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5 && i >= 4) {
+			else if (i <= 284 && (i % 19 >= 4) && state_bord[i] + state_bord[i + 18] + state_bord[i + 36] + state_bord[i + 54] + state_bord[i + 72] == -5) {
 				showMessage("White Win!!");
 				end_game();
 			}
-			else if (i <= 280 && (i % 19 <= 14) && state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5 && i <= 15) {
+			else if (i <= 280 && (i % 19 <= 14) && state_bord[i] + state_bord[i + 20] + state_bord[i + 40] + state_bord[i + 60] + state_bord[i + 80] == -5) {
 				showMessage("White Win!!");
 				end_game();
 			}
